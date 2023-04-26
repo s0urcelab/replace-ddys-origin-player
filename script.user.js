@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Replace ddys Origin Player
-// @namespace    https://src.moe
+// @namespace    https://github.com/s0urcelab/replace-ddys-origin-player
 // @version      1.0
 // @description  替换ddys原始播放器，移除反广告限制，修复滚轮和全屏快捷键失效bug，优化选集，自动记忆选集和上次播放位置
 // @author       s0urce
@@ -8,7 +8,7 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=ddys.art
 // @grant        GM_addStyle
 // @grant        GM_xmlhttpRequest
-// @require      https://unpkg.byted-static.com/xgplayer/2.31.2/browser/index.js
+// @require      https://raw.githubusercontent.com/s0urcelab/replace-ddys-origin-player/master/lib/xgplayer.2.31.2.js
 // @run-at       document-end
 // ==/UserScript==
 
