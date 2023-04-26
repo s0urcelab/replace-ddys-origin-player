@@ -8,7 +8,7 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=ddys.art
 // @grant        GM_addStyle
 // @grant        GM_xmlhttpRequest
-// @require      https://fastly.jsdelivr.net/gh/s0urcelab/replace-ddys-origin-player@master/lib/xgplayer.2.31.2.js
+// @require      https://fastly.jsdelivr.net/npm/xgplayer@2.31.2/dist/index.min.js
 // @run-at       document-end
 // ==/UserScript==
 
