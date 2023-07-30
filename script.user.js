@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Replace ddys Origin Player
 // @namespace    https://github.com/s0urcelab/replace-ddys-origin-player
-// @version      1.2
+// @version      1.3
 // @description  替换ddys播放器，移除Adblock屏蔽，修复滚轮和全屏快捷键失效bug，优化选集和线路功能，自动记忆选集
 // @author       s0urce
 // @match        https://ddys.art/*
@@ -12,8 +12,11 @@
 // @run-at       document-end
 // ==/UserScript==
 
-const $$ = (q) => document.querySelector(q)
-const $$$ = (q) => document.querySelectorAll(q)
+const QS = (q) => document.querySelector(q)
+const QSA = (q) => document.querySelectorAll(q)
+
+const domain = window.location.hostname
+const src4domain = `v.ddys.pro`
 
 const globalStyle = `
 .wp-playlist-tracks {
@@ -104,10 +107,11 @@ const globalStyle = `
 }
 `
 function parseResUrl(region, d) {
+    // type 4
+    if (d.srctype === '4') return { ...d, url: `https://${src4domain}${d.src3}` }
     // 海外线路
     if (region == 'overseas') return { ...d, url: `https://w.ddys.art${d.src0}?ddrkey=${d.src2}` }
 
-    const domain = window.location.hostname
     return new Promise((resolve, reject) => {
         GM_xmlhttpRequest({
             method: 'GET',
@@ -115,7 +119,7 @@ function parseResUrl(region, d) {
             headers: {
                 'referer': `https://${domain}/`
             },
-            url: `https://${domain}/getvddr/video?id=${d.src1}&dim=1080P&type=mix`,
+            url: `https://${domain}/getvddr2/video?id=${d.src1}&type=json`,
             onload: res => {
                 resolve({ ...d, url: res.response.url })
             },
@@ -196,7 +200,7 @@ class Switch {
 ; (async function () {
     'use strict';
 
-    const originContainer = $$('.wp-video-playlist')
+    const originContainer = QS('.wp-video-playlist')
     // cannot found Player, quit
     if (!originContainer) return;
 
@@ -217,7 +221,7 @@ class Switch {
     </div>
     `
     // get video resource from page data
-    const res = JSON.parse($$('.wp-playlist-script').textContent)
+    const res = JSON.parse(QS('.wp-playlist-script').textContent)
     const resPromise = res.tracks
         .map((track, idx) => ({ ...track, key: `${idx + 1}`, label: track.caption }))
         .map(d => parseResUrl(window.localStorage['region'], d))
@@ -242,7 +246,7 @@ class Switch {
 
     // init switch
     const switchs = new Switch({
-        root: $$('.switch-root'),
+        root: QS('.switch-root'),
         data: [{ key: 'domestic', label: '国内线路' }, { key: 'overseas', label: '海外线路' }],
         onSwitch: (key, record) => {
             console.warn(`切换线路：${record.label}，即将刷新页面`)
@@ -253,7 +257,7 @@ class Switch {
     switchs.render(window.localStorage['region'])
     // init tabs
     const tabs = new Tabs({
-        root: $$('.tabs-root'),
+        root: QS('.tabs-root'),
         data: resGroups,
         onSelect: (key, record) => {
             console.warn(`切换选集：【${key}】${record.label}`)
